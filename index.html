@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>MISSION判定ツール | Who’s the One TEAM2</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <p class="eyebrow">Who’s the One TEAM2 / ライラックチーム</p>
+      <h1>MISSION判定ツール</h1>
+      <p class="lead">好きな項目から挑戦！インサイト画像をまとめて選ぶと、そのMISSIONを自動集計・判定します。</p>
+    </header>
+
+    <section class="card settings">
+      <div class="field-group">
+        <span class="label">挑戦方法</span>
+        <div class="segmented" id="modeSelector">
+          <button type="button" data-mode="solo" class="active">🙋 ソロ</button>
+          <button type="button" data-mode="duo">👥 ペア</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <span class="label">挑戦する項目</span>
+        <div class="segmented" id="typeSelector">
+          <button type="button" data-type="count" class="active">▶ 配信回数</button>
+          <button type="button" data-type="listeners">👥 リスナー</button>
+          <button type="button" data-type="minutes">◷ 配信時間</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <span class="label">判定するMISSION</span>
+        <div class="segmented stage-seg" id="missionSelector"></div>
+      </div>
+
+      <div class="field-group start-date-field">
+        <label class="label" for="missionStart">このMISSIONの開始日（任意）</label>
+        <input id="missionStart" type="date" />
+        <p class="hint">前MISSIONをクリアした翌日を指定。開始日前の画像は集計から除外します。</p>
+      </div>
+
+      <div class="target" id="targetBox"></div>
+    </section>
+
+    <section class="card example-card">
+      <div class="section-head">
+        <div>
+          <p class="mini">アップロード画像の例</p>
+          <h2>こんな画像をアップしてね！</h2>
+        </div>
+        <span class="pill example-pill">OK例</span>
+      </div>
+      <p class="example-copy">日付が表示された状態の「インサイト ＞ 全体」のスクリーンショットを使ってください。</p>
+      <img class="example-image" src="example-insight.png" alt="日付・配信回数・配信時間・トータルリスナー数が表示されたSpoonインサイト画像の例" />
+      <div class="example-checks">
+        <span>✓ 日付</span>
+        <span>✓ 配信回数</span>
+        <span>✓ 配信時間</span>
+        <span>✓ トータルリスナー数</span>
+      </div>
+      <p class="hint">※ そのMISSION期間中の日別画像を、複数枚まとめて選択できます。</p>
+    </section>
+
+    <section class="card upload-section" id="personASection">
+      <div class="section-head">
+        <div>
+          <p class="mini">インサイト画像</p>
+          <h2 id="personATitle">画像をまとめて追加</h2>
+        </div>
+        <span class="pill" id="personABadge">ソロ</span>
+      </div>
+      <label class="dropzone" for="filesA">
+        <input id="filesA" type="file" accept="image/*" multiple />
+        <span class="drop-icon">＋</span>
+        <strong>画像を選択</strong>
+        <span>複数枚まとめてOK</span>
+      </label>
+      <div class="scan-note">日付が表示された状態のインサイト画像を使ってください。</div>
+      <div id="rowsA" class="rows"></div>
+    </section>
+
+    <section class="card upload-section hidden" id="personBSection">
+      <div class="section-head">
+        <div>
+          <p class="mini">相方のインサイト画像</p>
+          <h2>2人目の画像を追加</h2>
+        </div>
+        <span class="pill blue">ペアB</span>
+      </div>
+      <label class="dropzone" for="filesB">
+        <input id="filesB" type="file" accept="image/*" multiple />
+        <span class="drop-icon">＋</span>
+        <strong>画像を選択</strong>
+        <span>複数枚まとめてOK</span>
+      </label>
+      <div id="rowsB" class="rows"></div>
+    </section>
+
+    <section class="card result-card" id="resultCard">
+      <div class="section-head">
+        <div>
+          <p class="mini">現在の集計</p>
+          <h2>判定結果</h2>
+        </div>
+        <button type="button" class="ghost" id="resetBtn">リセット</button>
+      </div>
+
+      <div id="warnings"></div>
+      <div id="totals" class="totals"></div>
+      <div id="verdict" class="verdict waiting">画像を追加するとここに判定結果が表示されます。</div>
+      <button type="button" id="copyBtn" class="copy-btn" disabled>Discord用結果をコピー</button>
+    </section>
+
+    <section class="card guide">
+      <h2>使い方</h2>
+      <ol>
+        <li>ソロ / ペアと、挑戦する項目・MISSIONを選ぶ</li>
+        <li>そのMISSION期間中の日付入りインサイト画像をまとめて追加</li>
+        <li>自動読み取り結果を確認し、違っていたら数字を修正</li>
+        <li>CLEAR判定を確認。CLEARしたらDiscordで報告し、運営確認後に次MISSIONの限定スレッドへ</li>
+      </ol>
+      <p class="notice">※ 自動読み取りは補助機能です。最終確認は運営陣が行います。画像はブラウザ内で読み取り、外部サーバーへ送信しません。MISSION 2・3の目標実数はDiscordの限定スレッドでのみ確認できます。</p>
+    </section>
+
+    <footer>Who’s the One TEAM2 ・ LILAC TEAM</footer>
+  </main>
+
+  <template id="rowTemplate">
+    <article class="ocr-row">
+      <div class="thumb-wrap"><img class="thumb" alt="アップロード画像のプレビュー" /></div>
+      <div class="row-main">
+        <div class="row-top">
+          <span class="filename"></span>
+          <span class="scan-status">読み取り待ち</span>
+          <button type="button" class="delete-row" aria-label="削除">×</button>
+        </div>
+        <div class="fields-grid">
+          <label>日付<input class="date" type="date" /></label>
+          <label>配信回数<input class="count" type="number" min="0" step="1" inputmode="numeric" /></label>
+          <label>時間<input class="hours" type="number" min="0" step="1" inputmode="numeric" /></label>
+          <label>分<input class="minutes" type="number" min="0" max="59" step="1" inputmode="numeric" /></label>
+          <label>リスナー<input class="listeners" type="number" min="0" step="1" inputmode="numeric" /></label>
+        </div>
+        <div class="row-warning"></div>
+      </div>
+    </article>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
